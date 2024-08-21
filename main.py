@@ -1,7 +1,6 @@
 from dotenv import load_dotenv
 import os
-
-from langchain.chains.conversation.base import ConversationChain
+from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain.memory import ConversationBufferMemory
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.schema import (
@@ -21,12 +20,14 @@ def main():
     messages = [
         SystemMessage(content="You are  a helpful assistant"),
     ]
+    memory = ConversationBufferMemory()
+    def get_message():
+        return memory.chat_memory
     print("Hello, I am Your personal Assistant!")
     llm = ChatGoogleGenerativeAI(model="gemini-1.5-pro")
-    conversation = ConversationChain(
-        llm=llm,
-        memory=ConversationBufferMemory(),
-        verbose=True
+    conversation = RunnableWithMessageHistory(
+        get_session_history=get_message,
+        runnable=llm
     )
     while True:
         user_input = input("> ")
@@ -36,8 +37,8 @@ def main():
         # print("\nAssistant:\n", ai_response)
         #
         # messages.append(AIMessage(content=ai_response.content))
-        ai_response = conversation.predict(input=user_input)
-        messages.append(AIMessage(content=ai_response))
+        ai_response =   conversation.invoke(input=user_input)
+        messages.append(AIMessage(content=ai_response.content))
         print(f'\nAssistant: \n{ai_response}')
 
 
