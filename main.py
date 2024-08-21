@@ -37,7 +37,7 @@ def main():
         #
         # messages.append(AIMessage(content=ai_response.content))
         ai_response = conversation.predict(input=user_input)
-        messages.append(AIMessage(content=ai_reponse))
+        messages.append(AIMessage(content=ai_response))
         print(f'\nAssistant: \n{ai_response}')
 
 
