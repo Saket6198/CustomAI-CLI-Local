@@ -6,6 +6,8 @@ from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain.memory import ConversationEntityMemory
 from langchain.memory.prompt import ENTITY_MEMORY_CONVERSATION_TEMPLATE
 from langchain_google_genai import ChatGoogleGenerativeAI
+
+
 from langchain.schema import (
     SystemMessage,
     HumanMessage,
@@ -46,9 +48,10 @@ def main():
         # Verbose output: Show the current memory state before processing
         print(f"\n[Memory Before]: {memory.chat_memory.messages}")
 
-        ai_response =   conversation.invoke(input=user_input)
-        messages.append(AIMessage(content=ai_response.content))
-        print(f'\nAssistant: \n{ai_response}')
+        ai_response = conversation.invoke(input=user_input)
+        formatted_message = ai_response.content.replace("\\n", "\n")
+        messages.append(AIMessage(content=formatted_message))
+        print(f'\nAssistant: \n{formatted_message}')
 
 
 if __name__ == "__main__":
